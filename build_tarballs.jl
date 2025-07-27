@@ -1,8 +1,8 @@
 using BinaryBuilder
 using Pkg: PackageSpec
 
-name = "bsplines"
-version = v"0.1"
+name = "BSplines"
+version = v"0.1.5"
 
 # Think ChatGPT uses FileSource incorrectlyhere
 # Filesource is downloaded from the internet, DirectorySource is local
@@ -10,13 +10,18 @@ sources = [
     DirectorySource("./src"), 
 ]
 
-#cd ${WORKSPACE}/srcdir/bsplines
+#script = raw"""
+#install -D LICENSE {prefix}/share/licenses/bsplines/LICENSE
+#mkdir -p "${libdir}"
+#gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvb.f -o $libdir/libbsplvb.o
+#gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvd.f -o $libdir/libbsplvd.o
+#gfortran -shared -o $libdir/libbsplines.${dlext} $libdir/libbsplvb.o $libdir/libbsplvd.o
+#"""                                      
 script = raw"""
-install -D LICENSE {prefix}/share/licenses/bsplines/LICENSE
+cd ${WORKSPACE}/srcdir
 mkdir -p "${libdir}"
-gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvb.f -o $libdir/libbsplvb.o
-gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvd.f -o $libdir/libbsplvd.o
-gfortran -shared -o $libdir/libbsplines.${dlext} $libdir/libbsplvb.o $libdir/libbsplvd.o
+install -D LICENSE {prefix}/share/licenses/bsplines/LICENSE
+gfortran -O3 -shared -fPIC -fdefault-real-8 bsplvb.f bsplvd.f -o $libdir/libbsplines.${dlext}
 """                                      
 
 # Only linux for now
