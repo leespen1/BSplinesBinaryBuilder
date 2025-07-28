@@ -2,39 +2,38 @@ using BinaryBuilder
 using Pkg: PackageSpec
 
 name = "BSplines"
-version = v"0.1.5"
+version = v"0.1.12"
 
-# Think ChatGPT uses FileSource incorrectlyhere
-# Filesource is downloaded from the internet, DirectorySource is local
 sources = [
     DirectorySource("./src"), 
 ]
 
-#script = raw"""
-#install -D LICENSE {prefix}/share/licenses/bsplines/LICENSE
-#mkdir -p "${libdir}"
-#gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvb.f -o $libdir/libbsplvb.o
-#gfortran -c -O3 -shared -fPIC -fdefault-real-8 bsplvd.f -o $libdir/libbsplvd.o
-#gfortran -shared -o $libdir/libbsplines.${dlext} $libdir/libbsplvb.o $libdir/libbsplvd.o
-#"""                                      
 script = raw"""
 cd ${WORKSPACE}/srcdir
-mkdir -p "${libdir}"
-install -D LICENSE {prefix}/share/licenses/bsplines/LICENSE
-gfortran -O3 -shared -fPIC -fdefault-real-8 bsplvb.f bsplvd.f -o $libdir/libbsplines.${dlext}
+gfortran -O3 -shared -fPIC -fdefault-real-8 bsplvb.f bsplvd.f -o libbsplines.${dlext}
+install -D libbsplines.${dlext} ${libdir}/libbsplines.${dlext}
 """                                      
 
-# Only linux for now
-platforms = [HostPlatform()]
-#platforms = supported_platforms()
+## Just the host platform
+#host_plat = HostPlatform()
+#host_plat_nojulia = Platform(arch(host_plat), os(host_plat))
+#platforms = [host_plat_nojulia]
+## All platforms, will take a long time (and maybe run out of disk)
+#platforms = supported_platforms() 
+## Main platfroms
+platforms = [
+    Platform("x86_64", "linux"),
+    Platform("x86_64", "windows"),
+    Platform("x86_64", "macos"),
+    Platform("aarch64", "macos"),
+]
 platforms = expand_gfortran_versions(platforms)
 
 products = [
-    LibraryProduct("libbsplines", :libbsplines)
+    LibraryProduct("libbsplines", :libbsplines),
 ]
 
 dependencies = [
-    # Silences a warning
     Dependency(PackageSpec(name="CompilerSupportLibraries_jll", uuid="e66e0078-7015-5450-92f7-15fbd957f2ae")),
 ]
 
@@ -47,5 +46,6 @@ build_tarballs(
     script,
     platforms,
     products,
-    dependencies
+    dependencies,
+    julia_compat="1.6",
 )
