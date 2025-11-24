@@ -23,9 +23,9 @@ install -D libbsplines.${dlext} ${libdir}/libbsplines.${dlext}
 ## Main platfroms
 platforms = [
     Platform("x86_64", "linux"),
-    Platform("x86_64", "windows"),
-    Platform("x86_64", "macos"),
-    Platform("aarch64", "macos"),
+#    Platform("x86_64", "windows"),
+#    Platform("x86_64", "macos"),
+#    Platform("aarch64", "macos"),
 ]
 platforms = expand_gfortran_versions(platforms)
 

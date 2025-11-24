@@ -14,4 +14,4 @@ B-Spline subroutines as Julia code directly in QuantumGateDesign.jl.
 
 In order to deploy to github, need to do `export GITHUB_AUTH=ghp_yourpersonalaccesstokenhere`
 once per session, then run `julia +1.7 build_tarballs.jl --deploy=gh`, or use
-`--deplot=local` and manage the tarballs myself. 
+`--deploy=local` and manage the tarballs myself. 
